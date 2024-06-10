@@ -7,11 +7,20 @@ async function getData() {
 
     const productSumsMap = {};
 
-    data.bikesalesdata.forEach((user) => {
-      const { Product, Product_Category, Country, Revenue, Profit, Order_Quantity } = user;
+    data.bikesalesdata.forEach((sale) => {
+      const {
+        Product,
+        Product_Category,
+        Country,
+        Revenue,
+        Profit,
+        Order_Quantity,
+      } = sale;
 
-      if (!productSumsMap[Product]) {
-        productSumsMap[Product] = {
+      const key = `${Product}-${Country}`;
+
+      if (!productSumsMap[key]) {
+        productSumsMap[key] = {
           Product,
           Product_Category,
           Country,
@@ -21,30 +30,30 @@ async function getData() {
         };
       }
 
-      productSumsMap[Product].Revenue += parseFloat(Revenue);
-      productSumsMap[Product].Profit += parseFloat(Profit);
-      productSumsMap[Product].Order_Quantity += parseInt(Order_Quantity, 10);
+      productSumsMap[key].Revenue += parseFloat(Revenue);
+      productSumsMap[key].Profit += parseFloat(Profit);
+      productSumsMap[key].Order_Quantity += parseInt(Order_Quantity, 10);
     });
 
     productSums = Object.values(productSumsMap);
     populateTable(productSums);
 
     // Initialize DataTable after the table has been populated
-    $('#myTable').DataTable({
+    $("#myTable").DataTable({
       columnDefs: [
         {
           targets: [0],
-          orderData: [0, 1]
+          orderData: [0, 1],
         },
         {
           targets: [1],
-          orderData: [1, 0]
+          orderData: [1, 0],
         },
         {
           targets: [4],
-          orderData: [4, 0]
-        }
-      ]
+          orderData: [4, 0],
+        },
+      ],
     });
   } catch (error) {
     console.error("Error fetching data:", error);
